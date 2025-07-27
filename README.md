@@ -1,2 +1,2 @@
-# CheeKly
+# ChecKly
 website performance checker
