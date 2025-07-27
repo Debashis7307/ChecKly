@@ -18,6 +18,7 @@ import AnalysisLoading from "./components/AnalysisLoading";
 import AnalysisDashboard from "./components/AnalysisDashboard";
 import websiteAnalysisService from "./services/websiteAnalysis";
 import logo from "./assets/logo.png";
+import boyImage from "./assets/boy.png";
 
 function App() {
   const [url, setUrl] = useState("");
@@ -62,6 +63,17 @@ function App() {
       const results = await websiteAnalysisService.analyzeWebsite(url);
       setAnalysisResults(results);
       setShowDashboard(true);
+
+      // Scroll to the dashboard after a short delay to ensure it's rendered
+      setTimeout(() => {
+        const dashboardElement = document.getElementById("analysis-dashboard");
+        if (dashboardElement) {
+          dashboardElement.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }, 100);
     } catch (error) {
       console.error("Analysis failed:", error);
       alert("Analysis failed. Please try again.");
@@ -242,7 +254,7 @@ function App() {
                       type="url"
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
-                      placeholder="https://entire.your.website"
+                      placeholder="https://enter.your.website"
                       className="input-field pl-16 pr-32"
                       required
                     />
@@ -285,14 +297,15 @@ function App() {
             </div>
 
             {/* Right Side - Lottie Animation */}
-            <div className="flex justify-center lg:justify-end animate-fade-in lg:pt-8 lg:pr-8">
+            <div className="flex justify-center lg:justify-end animate-fade-in  lg:pr-8">
               <div className="w-full max-w-md bg-transparent">
                 <DotLottieReact
                   src="https://lottie.host/83234873-d991-47fe-a8e4-7aa02f97481b/3mLZAY4ZFD.lottie"
                   loop
                   autoplay
+                  className="lottie-animation"
                   style={{
-                    width: "120%",
+                    width: "125%",
                     height: "450px",
                     background: "transparent",
                   }}
@@ -302,6 +315,17 @@ function App() {
           </div>
         </div>
       </main>
+
+      {/* Analysis Dashboard - Dynamic Section */}
+      {showDashboard && analysisResults && (
+        <div id="analysis-dashboard">
+          <AnalysisDashboard
+            results={analysisResults}
+            onBack={handleBackToHome}
+            onNewAnalysis={handleNewAnalysis}
+          />
+        </div>
+      )}
 
       {/* Features Section */}
       <section id="features" className="py-20 bg-white/50 backdrop-blur-sm">
@@ -361,15 +385,6 @@ function App() {
         </div>
       </section>
 
-      {/* Analysis Dashboard - Dynamic Section */}
-      {showDashboard && analysisResults && (
-        <AnalysisDashboard
-          results={analysisResults}
-          onBack={handleBackToHome}
-          onNewAnalysis={handleNewAnalysis}
-        />
-      )}
-
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -391,7 +406,56 @@ function App() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>&copy; 2024 ChecKly. All rights reserved.</p>
+            <div className="flex items-center justify-center space-x-4 flex-wrap">
+              <span>&copy; 2024 ChecKly. All rights reserved.</span>
+              <span className="text-sm text-gray-500">Made by</span>
+
+              {/* Debashis */}
+              <div className="flex items-center space-x-2 group">
+                <a
+                  href="https://deb-folio.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative"
+                >
+                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-600 hover:border-blue-400 transition-all duration-300 transform hover:scale-110 hover:shadow-lg">
+                    <img
+                      src={boyImage}
+                      alt="Debashis"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                    Debashis
+                  </div>
+                </a>
+                <span className="text-sm text-gray-400">Debashis</span>
+              </div>
+
+              <span className="text-sm text-gray-500">&</span>
+
+              {/* Parthib */}
+              <div className="flex items-center space-x-2 group">
+                <a
+                  href="https://hawkaii.netlify.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative"
+                >
+                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-600 hover:border-blue-400 transition-all duration-300 transform hover:scale-110 hover:shadow-lg">
+                    <img
+                      src={boyImage}
+                      alt="Parthib"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                    Parthib
+                  </div>
+                </a>
+                <span className="text-sm text-gray-400">Parthib</span>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
