@@ -1,0 +1,88 @@
+{
+  "categories": {
+    "SEO": {
+      "checks": [
+        {
+          "name": "Sitemap.xml",
+          "description": "Checks if sitemap.xml exists and contains valid URLs",
+          "endpoint": "/check-sitemap",
+          "weight": 10
+        },
+        {
+          "name": "Favicon",
+          "description": "Checks for favicon presence and loads successfully",
+          "endpoint": "/check-favicon",
+          "weight": 5
+        },
+        {
+          "name": "H1 Structure",
+          "description": "Checks for the existence of an <h1> tag and whether heading tags follow a logical order",
+          "endpoint": "/check-h1-structure",
+          "weight": 8
+        },
+        {
+          "name": "LLMs.txt",
+          "description": "Checks for llms.txt file to control AI training on your content",
+          "endpoint": "/check-llms-txt",
+          "weight": 3
+        },
+        {
+          "name": "Open Graph Tags",
+          "description": "Checks for Open Graph tags used by social media platforms for rich link previews",
+          "endpoint": "/check-open-graph",
+          "weight": 7
+        },
+        {
+          "name": "Robots.txt",
+          "description": "Checks if robots.txt exists and allows proper indexing",
+          "endpoint": "/check-robots-txt",
+          "weight": 6
+        },
+        {
+          "name": "SEO Metadata",
+          "description": "Checks for essential SEO metadata tags including title, description, and other important elements",
+          "endpoint": "/check-seo-metadata",
+          "weight": 12
+        }
+      ]
+    },
+    "PERFORMANCE": {
+      "checks": [
+        {
+          "name": "Image Optimization",
+          "description": "Analyzes image formats, sizes, alt text, and lazy loading implementation",
+          "endpoint": "/check-image-optimization",
+          "weight": 15
+        },
+        {
+          "name": "WWW Redirect",
+          "description": "Checks if www and non-www versions redirect to a canonical URL",
+          "endpoint": "/check-www-redirect",
+          "weight": 8
+        }
+      ]
+    },
+    "SECURITY": {
+      "checks": [
+        {
+          "name": "HTTPS Redirect",
+          "description": "Checks if HTTP traffic redirects to HTTPS",
+          "endpoint": "/check-https-redirect",
+          "weight": 20
+        },
+        {
+          "name": "SSL Certificate",
+          "description": "Checks if HTTPS connection works and SSL certificate is valid",
+          "endpoint": "/check-ssl-certificate",
+          "weight": 25
+        }
+      ]
+    }
+  },
+  "scoring": {
+    "excellent": 90,
+    "good": 75,
+    "fair": 60,
+    "poor": 40
+  }
+}

@@ -10,13 +10,24 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+import AuthModal from "./components/AuthModal";
+import UserProfileDropdown from "./components/UserProfileDropdown";
+import AnalysisLoading from "./components/AnalysisLoading";
+import AnalysisDashboard from "./components/AnalysisDashboard";
+import websiteAnalysisService from "./services/websiteAnalysis";
 import logo from "./assets/logo.png";
 
 function App() {
   const [url, setUrl] = useState("");
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResults, setAnalysisResults] = useState(null);
+  const [showDashboard, setShowDashboard] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,19 +38,53 @@ function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleAnalyze = (e) => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleAnalyze = async (e) => {
     e.preventDefault();
     if (!url.trim()) return;
 
+    // Check if user is signed in
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     setIsAnalyzing(true);
-    // Simulate analysis
-    setTimeout(() => {
+
+    try {
+      const results = await websiteAnalysisService.analyzeWebsite(url);
+      setAnalysisResults(results);
+      setShowDashboard(true);
+    } catch (error) {
+      console.error("Analysis failed:", error);
+      alert("Analysis failed. Please try again.");
+    } finally {
       setIsAnalyzing(false);
-      // Here you would implement the actual website analysis
-      alert(
-        "Website analysis feature will be implemented with Firebase integration!"
-      );
-    }, 2000);
+    }
+  };
+
+  const handleSignOut = () => {
+    // This will be handled by the UserProfileDropdown component
+    setUser(null);
+  };
+
+  const handleBackToHome = () => {
+    setShowDashboard(false);
+    setAnalysisResults(null);
+    setUrl("");
+  };
+
+  const handleNewAnalysis = () => {
+    setShowDashboard(false);
+    setAnalysisResults(null);
+    setUrl("");
   };
 
   const features = [
@@ -99,12 +144,16 @@ function App() {
 
             {/* Desktop Auth Buttons - Right */}
             <div className="hidden md:flex items-center space-x-4">
-              <button className="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                Sign In
-              </button>
-              <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300">
-                Sign Up
-              </button>
+              {user ? (
+                <UserProfileDropdown user={user} onSignOut={handleSignOut} />
+              ) : (
+                <button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300"
+                >
+                  Sign In
+                </button>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -136,12 +185,25 @@ function App() {
                 >
                   About
                 </a>
-                <button className="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors">
-                  Sign In
-                </button>
-                <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700">
-                  Sign Up
-                </button>
+                {user ? (
+                  <div className="flex items-center space-x-3">
+                    <span className="text-gray-700 font-medium">
+                      Welcome,{" "}
+                      {user.displayName || user.email?.split("@")[0] || "User"}!
+                    </span>
+                    <UserProfileDropdown
+                      user={user}
+                      onSignOut={handleSignOut}
+                    />
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700"
+                  >
+                    Sign In
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -285,7 +347,10 @@ function App() {
             their website analysis
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-2xl hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
+            <button
+              onClick={() => setIsAuthModalOpen(true)}
+              className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-2xl hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center"
+            >
               Get Started Free
               <ArrowRight className="w-5 h-5 ml-2" />
             </button>
@@ -295,6 +360,15 @@ function App() {
           </div>
         </div>
       </section>
+
+      {/* Analysis Dashboard - Dynamic Section */}
+      {showDashboard && analysisResults && (
+        <AnalysisDashboard
+          results={analysisResults}
+          onBack={handleBackToHome}
+          onNewAnalysis={handleNewAnalysis}
+        />
+      )}
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
@@ -321,6 +395,15 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* Analysis Loading Modal */}
+      {isAnalyzing && <AnalysisLoading url={url} />}
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </div>
   );
 }
