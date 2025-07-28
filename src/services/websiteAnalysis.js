@@ -113,6 +113,65 @@ class WebsiteAnalysisService {
     }
   }
 
+  async getLeaderboard() {
+    try {
+      console.log("Fetching leaderboard data...");
+      
+      const response = await api.get("/leaderboard");
+      
+      const leaderboardData = response.data;
+      console.log("Received leaderboard data:", leaderboardData);
+      
+      if (!leaderboardData) {
+        throw new Error("No leaderboard data received from server");
+      }
+      
+      return this.formatLeaderboardResults(leaderboardData);
+    } catch (error) {
+      console.error("Failed to fetch leaderboard:", error);
+      throw new Error(`Failed to fetch leaderboard: ${error.message}`);
+    }
+  }
+
+  formatLeaderboardResults(leaderboardData) {
+    console.log("Formatting leaderboard results:", leaderboardData);
+    
+    if (!leaderboardData) {
+      throw new Error("No leaderboard data provided");
+    }
+    
+    if (!leaderboardData.leaderboard || !Array.isArray(leaderboardData.leaderboard)) {
+      throw new Error("Invalid leaderboard data format");
+    }
+    
+    // Sort by overall score (descending) and format the data
+    const formattedLeaderboard = leaderboardData.leaderboard
+      .sort((a, b) => b.overall_score - a.overall_score)
+      .map((entry, index) => ({
+        rank: index + 1,
+        url: entry.url,
+        overallScore: entry.overall_score,
+        timestamp: entry.timestamp,
+        formattedDate: new Date(entry.timestamp).toLocaleDateString(),
+        formattedTime: new Date(entry.timestamp).toLocaleTimeString(),
+        domain: entry.url.replace(/^https?:\/\//, "").replace(/\/$/, ""),
+        favicon: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(entry.url)}&sz=64`
+      }));
+    
+    const results = {
+      leaderboard: formattedLeaderboard,
+      total: leaderboardData.total || formattedLeaderboard.length,
+      limit: leaderboardData.limit || 10,
+      topScore: formattedLeaderboard.length > 0 ? formattedLeaderboard[0].overallScore : 0,
+      averageScore: formattedLeaderboard.length > 0 
+        ? Math.round(formattedLeaderboard.reduce((sum, entry) => sum + entry.overallScore, 0) / formattedLeaderboard.length)
+        : 0
+    };
+    
+    console.log("Formatted leaderboard results:", results);
+    return results;
+  }
+
   formatAnalysisResults(checkData) {
     console.log("Formatting analysis results:", checkData);
 
