@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, X, Terminal } from "lucide-react";
+import { Menu, X, Terminal, Download } from "lucide-react";
 import UserProfileDropdown from "./UserProfileDropdown";
 import logo from "../assets/logo.png";
 
@@ -31,10 +31,10 @@ const Header = ({
           {/* Desktop Navigation - Center */}
           <div className="hidden md:flex items-center space-x-8">
             <a
-              href="#features"
+              href="#about"
               className="text-gray-300 hover:text-purple-400 transition-colors font-medium"
             >
-              Features
+              About
             </a>
             <button
               onClick={() => setIsLeaderboardOpen(true)}
@@ -43,10 +43,10 @@ const Header = ({
               🏆 Leaderboard
             </button>
             <a
-              href="#about"
+              href="#features"
               className="text-gray-300 hover:text-purple-400 transition-colors font-medium"
             >
-              About
+              Features
             </a>
           </div>
 
@@ -56,10 +56,14 @@ const Header = ({
               href="https://github.com/checkly-go/checkly/releases/tag/v0.1.0"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 text-white font-medium rounded-lg shadow-lg hover:from-purple-700 hover:to-pink-600 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-yellow-400 animate-pulse"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium rounded-lg shadow-lg hover:from-purple-700 hover:to-pink-700 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-pink-400 animate-pulse relative"
             >
               <Terminal className="w-5 h-5" />
               <span>CLI</span>
+              <span className="relative flex items-center justify-center ml-1">
+                <span className="absolute w-7 h-7 rounded-full border-2 border-pink-400 animate-ping-slow z-0"></span>
+                <Download className="w-5 h-5 z-10" />
+              </span>
             </a>
             {user ? (
               <UserProfileDropdown user={user} onSignOut={handleSignOut} />
@@ -79,9 +83,9 @@ const Header = ({
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? (
-              <X className="w-6 h-6" />
+              <X className="w-6 h-6 text-white" />
             ) : (
-              <Menu className="w-6 h-6" />
+              <Menu className="w-6 h-6 text-white" />
             )}
           </button>
         </div>
@@ -91,10 +95,10 @@ const Header = ({
           <div className="md:hidden mt-4 pb-4 border-t border-gray-600">
             <div className="flex flex-col space-y-4 pt-4">
               <a
-                href="#features"
+                href="#about"
                 className="text-gray-300 hover:text-purple-400 transition-colors"
               >
-                Features
+                About
               </a>
               <button
                 onClick={() => setIsLeaderboardOpen(true)}
@@ -103,30 +107,32 @@ const Header = ({
                 🏆 Leaderboard
               </button>
               <a
-                href="#about"
+                href="#features"
                 className="text-gray-300 hover:text-purple-400 transition-colors"
               >
-                About
+                Features
               </a>
-              {user ? (
-                <div className="flex items-center space-x-3">
-                  <span className="text-gray-300 font-medium">
-                    Welcome,{" "}
-                    {user.displayName || user.email?.split("@")[0] || "User"}!
-                  </span>
-                  <UserProfileDropdown
-                    user={user}
-                    onSignOut={handleSignOut}
-                  />
-                </div>
-              ) : (
-                <button
-                  onClick={() => setIsAuthModalOpen(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700"
+              <div className="flex gap-2">
+                <a
+                  href="https://github.com/checkly-go/checkly/releases/tag/v0.1.0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-gray-900 via-gray-700 to-blue-700 text-white font-medium rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-blue-400 animate-pulse"
                 >
-                  Sign In
-                </button>
-              )}
+                  <Terminal className="w-5 h-5" />
+                  <span>CLI</span>
+                </a>
+                {user ? (
+                  <UserProfileDropdown user={user} onSignOut={handleSignOut} />
+                ) : (
+                  <button
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700"
+                  >
+                    Sign In
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}

@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 
 const CTASection = ({ setIsAuthModalOpen }) => {
   return (
-    <section className="py-20 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700">
+    <section className="pt-32 pb-20 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
           Ready to Optimize Your Website?
