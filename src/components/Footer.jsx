@@ -12,6 +12,14 @@ const Footer = () => {
             <span className="text-xl font-bold">ChecKly</span>
           </div>
           <div className="flex space-x-6 text-gray-400">
+            <a
+              href="https://github.com/checkly-go/checkly"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-purple-400 transition-colors"
+            >
+              GitHub
+            </a>
             <a href="#" className="hover:text-purple-400 transition-colors">
               Privacy
             </a>
@@ -31,7 +39,7 @@ const Footer = () => {
             {/* Debashis */}
             <div className="flex items-center space-x-2 group">
               <a
-                href="https://deb-folio.vercel.app/"
+                href="deb-folio.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative"
@@ -55,7 +63,7 @@ const Footer = () => {
             {/* Parthib */}
             <div className="flex items-center space-x-2 group">
               <a
-                href="https://hawkaii.netlify.app/"
+                href="https://github.com/hawkaii"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative"
