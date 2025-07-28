@@ -331,14 +331,14 @@ function App() {
       )}
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white/50 backdrop-blur-sm">
+      <section id="features" className="py-20 bg-gray-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Everything You Need to
-              <span className="block gradient-text">Check Your Website</span>
+              <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">Check Your Website</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               Comprehensive analysis tools to ensure your website is performing
               at its best
             </p>
@@ -348,13 +348,13 @@ function App() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="glass-effect p-8 rounded-3xl hover:transform hover:scale-105 transition-all duration-300"
+                className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-3xl hover:transform hover:scale-105 transition-all duration-300 border border-gray-700 hover:border-purple-500"
               >
                 <div className="mb-6">{feature.icon}</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                <h3 className="text-2xl font-bold text-white mb-4">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed">
                   {feature.description}
                 </p>
               </div>
@@ -364,24 +364,24 @@ function App() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+      <section className="py-20 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Optimize Your Website?
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-xl text-purple-100 mb-8">
             Join thousands of developers and businesses who trust ChecKly for
             their website analysis
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-2xl hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center"
+              className="px-8 py-4 bg-white text-purple-600 font-semibold rounded-2xl hover:bg-yellow-100 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center"
             >
               Get Started Free
               <ArrowRight className="w-5 h-5 ml-2" />
             </button>
-            <button className="px-6 py-4 bg-transparent text-white font-semibold rounded-xl hover:bg-white hover:text-blue-600 transform hover:scale-105 transition-all duration-300 border-2 border-white">
+            <button className="px-6 py-4 bg-transparent text-white font-semibold rounded-xl hover:bg-white hover:text-purple-600 transform hover:scale-105 transition-all duration-300 border-2 border-white">
               Learn More
             </button>
           </div>
@@ -389,7 +389,7 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-black text-white py-12 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
@@ -397,13 +397,13 @@ function App() {
               <span className="text-xl font-bold">ChecKly</span>
             </div>
             <div className="flex space-x-6 text-gray-400">
-              <a href="#" className="hover:text-white transition-colors">
+              <a href="#" className="hover:text-purple-400 transition-colors">
                 Privacy
               </a>
-              <a href="#" className="hover:text-white transition-colors">
+              <a href="#" className="hover:text-purple-400 transition-colors">
                 Terms
               </a>
-              <a href="#" className="hover:text-white transition-colors">
+              <a href="#" className="hover:text-purple-400 transition-colors">
                 Contact
               </a>
             </div>
@@ -421,7 +421,7 @@ function App() {
                   rel="noopener noreferrer"
                   className="relative"
                 >
-                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-600 hover:border-blue-400 transition-all duration-300 transform hover:scale-110 hover:shadow-lg">
+                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-600 hover:border-purple-400 transition-all duration-300 transform hover:scale-110 hover:shadow-lg">
                     <img
                       src={boyImage}
                       alt="Debashis"
@@ -445,7 +445,7 @@ function App() {
                   rel="noopener noreferrer"
                   className="relative"
                 >
-                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-600 hover:border-blue-400 transition-all duration-300 transform hover:scale-110 hover:shadow-lg">
+                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-600 hover:border-purple-400 transition-all duration-300 transform hover:scale-110 hover:shadow-lg">
                     <img
                       src={boyImage}
                       alt="Parthib"
