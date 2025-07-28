@@ -9,7 +9,7 @@ import {
   ArrowRight,
   Menu,
   X,
-  Terminal, // <-- Add this import
+  Terminal,
 } from "lucide-react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
@@ -118,40 +118,39 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
       {/* Sticky Header */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/95 backdrop-blur-lg"
-            : "bg-white/80 backdrop-blur-md border-b border-white/20"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+          ? "bg-black/95 backdrop-blur-lg border-b border-purple-500/20"
+          : "bg-black/80 backdrop-blur-md border-b border-purple-500/10"
+          }`}
       >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center space-x-3">
               <img src={logo} alt="ChecKly" className="h-10 w-auto" />
-              <span className="text-2xl font-bold gradient-text">ChecKly</span>
+              <span className="text-2xl font-bold text-white">ChecKly</span>
             </div>
 
             {/* Desktop Navigation - Center */}
             <div className="hidden md:flex items-center space-x-8">
               <a
                 href="#features"
-                className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                className="text-gray-300 hover:text-purple-400 transition-colors font-medium"
               >
                 Features
               </a>
               <button
                 onClick={() => setIsLeaderboardOpen(true)}
-                className="text-gray-700 hover:text-blue-600 transition-colors font-medium flex items-center gap-1"
+                className="text-gray-300 hover:text-purple-400 transition-colors font-medium flex items-center gap-1"
               >
                 🏆 Leaderboard
               </button>
               <a
                 href="#about"
-                className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                className="text-gray-300 hover:text-purple-400 transition-colors font-medium"
               >
                 About
               </a>
@@ -163,7 +162,7 @@ function App() {
                 href="https://github.com/checkly-go/checkly/releases/tag/v0.1.0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gray-900 via-gray-700 to-blue-700 text-white font-medium rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-blue-400 animate-pulse"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 text-white font-medium rounded-lg shadow-lg hover:from-purple-700 hover:to-pink-600 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-yellow-400 animate-pulse"
               >
                 <Terminal className="w-5 h-5" />
                 <span>CLI</span>
@@ -173,7 +172,7 @@ function App() {
               ) : (
                 <button
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300"
+                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium rounded-lg hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300"
                 >
                   Sign In
                 </button>
@@ -195,29 +194,29 @@ function App() {
 
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
+            <div className="md:hidden mt-4 pb-4 border-t border-gray-600">
               <div className="flex flex-col space-y-4 pt-4">
                 <a
                   href="#features"
-                  className="text-gray-700 hover:text-blue-600 transition-colors"
+                  className="text-gray-300 hover:text-purple-400 transition-colors"
                 >
                   Features
                 </a>
                 <button
                   onClick={() => setIsLeaderboardOpen(true)}
-                  className="text-gray-700 hover:text-blue-600 transition-colors flex items-center gap-1"
+                  className="text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-1"
                 >
                   🏆 Leaderboard
                 </button>
                 <a
                   href="#about"
-                  className="text-gray-700 hover:text-blue-600 transition-colors"
+                  className="text-gray-300 hover:text-purple-400 transition-colors"
                 >
                   About
                 </a>
                 {user ? (
                   <div className="flex items-center space-x-3">
-                    <span className="text-gray-700 font-medium">
+                    <span className="text-gray-300 font-medium">
                       Welcome,{" "}
                       {user.displayName || user.email?.split("@")[0] || "User"}!
                     </span>
@@ -229,7 +228,7 @@ function App() {
                 ) : (
                   <button
                     onClick={() => setIsAuthModalOpen(true)}
-                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700"
+                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700"
                   >
                     Sign In
                   </button>
@@ -241,30 +240,30 @@ function App() {
       </header>
 
       {/* Hero Section */}
-      <main className="relative pt-24 bg-white">
+      <main className="relative pt-24 bg-black">
         {/* Background Animation */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse-slow"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-400/20 to-yellow-400/20 rounded-full blur-3xl animate-bounce-slow"></div>
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-500/20 to-yellow-400/20 rounded-full blur-3xl animate-bounce-slow"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-27">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left Side - Text Content */}
-            <div className="text-center lg:text-left lg:pl-8">
+          <div className="flex flex-col items-center justify-center text-center">
+            {/* Text Content */}
+            <div className="max-w-4xl mx-auto">
               {/* Main Heading */}
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 animate-fade-in">
+              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 animate-fade-in text-center">
                 Website Analysis
-                <span className="block gradient-text">Made Simple</span>
+                <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">Made Simple</span>
               </h1>
 
-              <p className="text-xl md:text-2xl text-gray-600 mb-12 animate-slide-up max-w-2xl mx-auto lg:mx-0">
+              <p className="text-xl md:text-2xl text-gray-300 mb-12 animate-slide-up max-w-2xl mx-auto text-center">
                 Get instant insights about your website's performance, security,
                 and SEO. Make your website ready for success with ChecKly.
               </p>
 
               {/* URL Input Form */}
-              <div className="mb-8 animate-slide-up max-w-xl mx-auto lg:mx-0">
+              <div className="mb-8 animate-slide-up max-w-xl mx-auto">
                 <form onSubmit={handleAnalyze} className="relative">
                   <div className="relative">
                     <Globe className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
@@ -273,13 +272,13 @@ function App() {
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
                       placeholder="https://enter.your.website"
-                      className="input-field pl-16 pr-32"
+                      className="input-field pl-16 pr-32 bg-gray-800 border-gray-600 text-white placeholder-gray-400"
                       required
                     />
                     <button
                       type="submit"
                       disabled={isAnalyzing}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 btn-primary py-3 px-6 flex items-center space-x-2"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-lg hover:from-purple-700 hover:to-pink-700 flex items-center space-x-2"
                     >
                       {isAnalyzing ? (
                         <>
@@ -297,7 +296,7 @@ function App() {
                 </form>
 
                 {/* Example URLs */}
-                <div className="mt-4 flex flex-wrap justify-center lg:justify-start gap-4 text-sm text-gray-500">
+                <div className="mt-4 flex flex-wrap justify-center gap-4 text-sm text-gray-400">
                   <span className="flex items-center space-x-1">
                     <Globe className="w-4 h-4" />
                     <span>example.com</span>
@@ -314,22 +313,6 @@ function App() {
               </div>
             </div>
 
-            {/* Right Side - Lottie Animation */}
-            <div className="flex justify-center lg:justify-end animate-fade-in  lg:pr-8">
-              <div className="w-full max-w-md bg-transparent">
-                <DotLottieReact
-                  src="https://lottie.host/83234873-d991-47fe-a8e4-7aa02f97481b/3mLZAY4ZFD.lottie"
-                  loop
-                  autoplay
-                  className="lottie-animation"
-                  style={{
-                    width: "125%",
-                    height: "450px",
-                    background: "transparent",
-                  }}
-                />
-              </div>
-            </div>
           </div>
         </div>
       </main>
