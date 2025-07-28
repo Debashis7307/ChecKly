@@ -9,6 +9,7 @@ import {
   ArrowRight,
   Menu,
   X,
+  Terminal, // <-- Add this import
 } from "lucide-react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
@@ -150,6 +151,15 @@ function App() {
 
             {/* Desktop Auth Buttons - Right */}
             <div className="hidden md:flex items-center space-x-4">
+              <a
+                href="https://github.com/checkly-go/checkly/releases/tag/v0.1.0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gray-900 via-gray-700 to-blue-700 text-white font-medium rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-blue-400 animate-pulse"
+              >
+                <Terminal className="w-5 h-5" />
+                <span>CLI</span>
+              </a>
               {user ? (
                 <UserProfileDropdown user={user} onSignOut={handleSignOut} />
               ) : (
