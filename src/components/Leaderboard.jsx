@@ -4,9 +4,9 @@ import { Trophy, Globe, X, Medal, TrendingUp } from "lucide-react";
 import websiteAnalysisService from "../services/websiteAnalysis";
 
 const rankColors = [
-  "bg-gradient-to-r from-yellow-400 to-yellow-300 text-yellow-900 border-yellow-400", // 1st
-  "bg-gradient-to-r from-purple-400 to-purple-300 text-purple-900 border-purple-400", // 2nd
-  "bg-gradient-to-r from-pink-400 to-pink-300 text-pink-900 border-pink-400", // 3rd
+  "bg-gradient-to-r from-yellow-600 to-yellow-500 text-white border-yellow-400", // 1st
+  "bg-gradient-to-r from-purple-600 to-purple-500 text-white border-purple-400", // 2nd
+  "bg-gradient-to-r from-pink-600 to-pink-500 text-white border-pink-400", // 3rd
 ];
 
 const getRankIcon = (rank) => {
