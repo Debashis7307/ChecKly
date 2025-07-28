@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Trophy, Globe, X, Medal, TrendingUp } from "lucide-react";
+import { Trophy, Globe, X, Medal, TrendingUp, ChevronDown } from "lucide-react";
 import websiteAnalysisService from "../services/websiteAnalysis";
 
 const rankColors = [
@@ -19,25 +19,62 @@ const getRankIcon = (rank) => {
 const Leaderboard = ({ isOpen, onClose }) => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [currentOffset, setCurrentOffset] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const pageSize = 10;
 
   useEffect(() => {
     if (isOpen) {
-      fetchLeaderboard();
+      fetchLeaderboard(true);
     }
   }, [isOpen]);
 
-  const fetchLeaderboard = async () => {
-    setLoading(true);
+  const fetchLeaderboard = async (reset = false) => {
+    if (reset) {
+      setLoading(true);
+      setCurrentOffset(0);
+      setLeaderboard([]);
+      setHasMore(true);
+    } else {
+      setLoadingMore(true);
+    }
+    
     setError(null);
+    
     try {
-      const data = await websiteAnalysisService.getLeaderboard();
-      setLeaderboard(data.leaderboard || []);
+      const offset = reset ? 0 : currentOffset;
+      const data = await websiteAnalysisService.getLeaderboard(pageSize, offset);
+      
+      if (reset) {
+        setLeaderboard(data.leaderboard || []);
+      } else {
+        setLeaderboard(prev => [...prev, ...(data.leaderboard || [])]);
+      }
+      
+      // Update pagination state
+      setTotalCount(data.total || (data.leaderboard || []).length);
+      setCurrentOffset(offset + pageSize);
+      
+      // Check if there are more items to load
+      const receivedItems = (data.leaderboard || []).length;
+      const isLastPage = receivedItems < pageSize;
+      setHasMore(!isLastPage);
+      
     } catch (err) {
       setError(err.message || "Failed to load leaderboard data");
       console.error("Leaderboard fetch error:", err);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  const loadMoreProjects = () => {
+    if (!loadingMore && hasMore) {
+      fetchLeaderboard(false);
     }
   };
 
@@ -73,7 +110,7 @@ const Leaderboard = ({ isOpen, onClose }) => {
             </button>
           </div>
           <p className="text-purple-100 mt-2">
-            Top 10 websites with the best analysis scores
+            Top websites with the best analysis scores ({totalCount > 0 ? `Showing ${leaderboard.length} of ${totalCount}` : '0 entries'})
           </p>
         </div>
 
@@ -93,7 +130,7 @@ const Leaderboard = ({ isOpen, onClose }) => {
               </div>
               <p className="text-gray-300">{error}</p>
               <button
-                onClick={fetchLeaderboard}
+                onClick={() => fetchLeaderboard(true)}
                 className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
               >
                 Try Again
@@ -111,12 +148,12 @@ const Leaderboard = ({ isOpen, onClose }) => {
             </div>
           ) : (
             <div className="space-y-3">
-              {leaderboard.slice(0, 10).map((entry, idx) => (
+              {leaderboard.map((entry, idx) => (
                 <motion.div
                   key={entry.url + entry.timestamp}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
+                  transition={{ delay: (idx % 10) * 0.1 }}
                   className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 hover:shadow-lg ${
                     idx < 3
                       ? rankColors[idx] + " shadow-lg transform hover:scale-105"
@@ -184,6 +221,33 @@ const Leaderboard = ({ isOpen, onClose }) => {
                   </div>
                 </motion.div>
               ))}
+              
+              {/* Load More Button */}
+              {hasMore && !loading && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-center pt-4"
+                >
+                  <button
+                    onClick={loadMoreProjects}
+                    disabled={loadingMore}
+                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    {loadingMore ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Loading more...
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4" />
+                        Load More Projects
+                      </>
+                    )}
+                  </button>
+                </motion.div>
+              )}
             </div>
           )}
         </div>
@@ -201,3 +265,4 @@ const Leaderboard = ({ isOpen, onClose }) => {
 };
 
 export default Leaderboard;
+// Force cache refresh - Mon Jul 28 15:17:47 UTC 2025

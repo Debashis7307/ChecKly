@@ -113,19 +113,24 @@ class WebsiteAnalysisService {
     }
   }
 
-  async getLeaderboard() {
+  async getLeaderboard(limit = 10, offset = 0) {
     try {
-      console.log("Fetching leaderboard data...");
-      
-      const response = await api.get("/leaderboard");
-      
+      console.log("Fetching leaderboard data...", { limit, offset });
+
+      const params = new URLSearchParams();
+      if (limit) params.append("limit", limit.toString());
+      if (offset) params.append("offset", offset.toString());
+
+      const url = `/leaderboard${params.toString() ? "?" + params.toString() : ""}`;
+      const response = await api.get(url);
+
       const leaderboardData = response.data;
       console.log("Received leaderboard data:", leaderboardData);
-      
+
       if (!leaderboardData) {
         throw new Error("No leaderboard data received from server");
       }
-      
+
       return this.formatLeaderboardResults(leaderboardData);
     } catch (error) {
       console.error("Failed to fetch leaderboard:", error);
@@ -135,15 +140,18 @@ class WebsiteAnalysisService {
 
   formatLeaderboardResults(leaderboardData) {
     console.log("Formatting leaderboard results:", leaderboardData);
-    
+
     if (!leaderboardData) {
       throw new Error("No leaderboard data provided");
     }
-    
-    if (!leaderboardData.leaderboard || !Array.isArray(leaderboardData.leaderboard)) {
+
+    if (
+      !leaderboardData.leaderboard ||
+      !Array.isArray(leaderboardData.leaderboard)
+    ) {
       throw new Error("Invalid leaderboard data format");
     }
-    
+
     // Sort by overall score (descending) and format the data
     const formattedLeaderboard = leaderboardData.leaderboard
       .sort((a, b) => b.overall_score - a.overall_score)
@@ -155,19 +163,28 @@ class WebsiteAnalysisService {
         formattedDate: new Date(entry.timestamp).toLocaleDateString(),
         formattedTime: new Date(entry.timestamp).toLocaleTimeString(),
         domain: entry.url.replace(/^https?:\/\//, "").replace(/\/$/, ""),
-        favicon: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(entry.url)}&sz=64`
+        favicon: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(entry.url)}&sz=64`,
       }));
-    
+
     const results = {
       leaderboard: formattedLeaderboard,
       total: leaderboardData.total || formattedLeaderboard.length,
       limit: leaderboardData.limit || 10,
-      topScore: formattedLeaderboard.length > 0 ? formattedLeaderboard[0].overallScore : 0,
-      averageScore: formattedLeaderboard.length > 0 
-        ? Math.round(formattedLeaderboard.reduce((sum, entry) => sum + entry.overallScore, 0) / formattedLeaderboard.length)
-        : 0
+      topScore:
+        formattedLeaderboard.length > 0
+          ? formattedLeaderboard[0].overallScore
+          : 0,
+      averageScore:
+        formattedLeaderboard.length > 0
+          ? Math.round(
+              formattedLeaderboard.reduce(
+                (sum, entry) => sum + entry.overallScore,
+                0,
+              ) / formattedLeaderboard.length,
+            )
+          : 0,
     };
-    
+
     console.log("Formatted leaderboard results:", results);
     return results;
   }
@@ -323,4 +340,3 @@ class WebsiteAnalysisService {
 }
 
 export default new WebsiteAnalysisService();
-
