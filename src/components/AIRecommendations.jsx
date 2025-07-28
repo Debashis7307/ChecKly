@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import {
   Brain,
   Lightbulb,
@@ -9,28 +10,31 @@ import {
   Zap,
   Shield,
   BarChart3,
+  LogIn,
 } from "lucide-react";
 import websiteAnalysisService from "../services/websiteAnalysis";
 
-const AIRecommendations = ({ results }) => {
+const AIRecommendations = ({ results, user, onSignInRequired }) => {
   const [aiRecommendations, setAiRecommendations] = useState(null);
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
 
-  useEffect(() => {
-    if (results?.id) {
-      loadAiRecommendations();
-    }
-  }, [results]);
-
   const loadAiRecommendations = async () => {
     if (!results?.id) return;
-    
+
+    // Check if user is signed in
+    if (!user) {
+      onSignInRequired();
+      return;
+    }
+
     setLoadingRecommendations(true);
     try {
-      const recommendations = await websiteAnalysisService.getRecommendations(results.id);
+      const recommendations = await websiteAnalysisService.getRecommendations(
+        results.id
+      );
       setAiRecommendations(recommendations);
     } catch (error) {
-      console.error('Failed to load AI recommendations:', error);
+      console.error("Failed to load AI recommendations:", error);
     } finally {
       setLoadingRecommendations(false);
     }
@@ -78,7 +82,11 @@ const AIRecommendations = ({ results }) => {
             disabled={loadingRecommendations}
             className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 disabled:opacity-50"
           >
-            <RefreshCw className={`w-4 h-4 ${loadingRecommendations ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`w-4 h-4 ${
+                loadingRecommendations ? "animate-spin" : ""
+              }`}
+            />
             <span>Refresh</span>
           </button>
         </div>
@@ -88,7 +96,13 @@ const AIRecommendations = ({ results }) => {
         {loadingRecommendations ? (
           <div className="flex items-center justify-center py-12">
             <div className="flex flex-col items-center space-y-4">
-              <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+              <div className="w-48 h-48">
+                <DotLottieReact
+                  src="https://lottie.host/bff0c4ca-7943-49eb-a48a-e5a545550fd9/OCG6qyPEtk.lottie"
+                  loop
+                  autoplay
+                />
+              </div>
               <p className="text-gray-600">Generating AI recommendations...</p>
             </div>
           </div>
@@ -100,23 +114,32 @@ const AIRecommendations = ({ results }) => {
                 <Lightbulb className="w-5 h-5 text-purple-600" />
                 <span>Executive Summary</span>
               </h4>
-              <p className="text-gray-700 leading-relaxed">{aiRecommendations.summary}</p>
+              <p className="text-gray-700 leading-relaxed">
+                {aiRecommendations.summary}
+              </p>
             </div>
 
             {/* Recommendations by Category */}
             <div className="grid lg:grid-cols-2 gap-6">
               {aiRecommendations.recommendations?.map((category, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all duration-300">
+                <div
+                  key={index}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all duration-300"
+                >
                   <div className="flex items-center justify-between mb-3">
                     <h5 className="font-semibold text-gray-900 capitalize flex items-center space-x-2">
                       {getCategoryIcon(category.category)}
                       <span>{category.category}</span>
                     </h5>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      category.priority === 'high' ? 'bg-red-100 text-red-700' :
-                      category.priority === 'medium' ? 'bg-amber-100 text-amber-700' :
-                      'bg-green-100 text-green-700'
-                    }`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        category.priority === "high"
+                          ? "bg-red-100 text-red-700"
+                          : category.priority === "medium"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-green-100 text-green-700"
+                      }`}
+                    >
                       {category.priority} priority
                     </span>
                   </div>
@@ -124,13 +147,24 @@ const AIRecommendations = ({ results }) => {
                   {/* Issues */}
                   {category.issues?.length > 0 && (
                     <div className="mb-4">
-                      <h6 className="text-sm font-medium text-gray-700 mb-2">Issues Found:</h6>
+                      <h6 className="text-sm font-medium text-gray-700 mb-2">
+                        Issues Found:
+                      </h6>
                       <div className="space-y-2">
                         {category.issues.map((issue, issueIndex) => (
-                          <div key={issueIndex} className="bg-red-50 rounded-lg p-3 border border-red-200">
-                            <p className="text-sm font-medium text-red-800">{issue.issue}</p>
-                            <p className="text-xs text-red-600 mt-1">{issue.impact}</p>
-                            <p className="text-xs text-gray-600 mt-1">Status: {issue.current_status}</p>
+                          <div
+                            key={issueIndex}
+                            className="bg-red-50 rounded-lg p-3 border border-red-200"
+                          >
+                            <p className="text-sm font-medium text-red-800">
+                              {issue.issue}
+                            </p>
+                            <p className="text-xs text-red-600 mt-1">
+                              {issue.impact}
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              Status: {issue.current_status}
+                            </p>
                           </div>
                         ))}
                       </div>
@@ -140,14 +174,23 @@ const AIRecommendations = ({ results }) => {
                   {/* Improvements */}
                   {category.improvements?.length > 0 && (
                     <div className="mb-4">
-                      <h6 className="text-sm font-medium text-gray-700 mb-2">Recommended Actions:</h6>
+                      <h6 className="text-sm font-medium text-gray-700 mb-2">
+                        Recommended Actions:
+                      </h6>
                       <div className="space-y-2">
-                        {category.improvements.map((improvement, improvementIndex) => (
-                          <div key={improvementIndex} className="flex items-start space-x-2">
-                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                            <p className="text-sm text-gray-700 leading-relaxed">{improvement}</p>
-                          </div>
-                        ))}
+                        {category.improvements.map(
+                          (improvement, improvementIndex) => (
+                            <div
+                              key={improvementIndex}
+                              className="flex items-start space-x-2"
+                            >
+                              <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <p className="text-sm text-gray-700 leading-relaxed">
+                                {improvement}
+                              </p>
+                            </div>
+                          )
+                        )}
                       </div>
                     </div>
                   )}
@@ -155,7 +198,9 @@ const AIRecommendations = ({ results }) => {
                   {/* Resources */}
                   {category.resources?.length > 0 && (
                     <div>
-                      <h6 className="text-sm font-medium text-gray-700 mb-2">Helpful Resources:</h6>
+                      <h6 className="text-sm font-medium text-gray-700 mb-2">
+                        Helpful Resources:
+                      </h6>
                       <div className="space-y-1">
                         {category.resources.map((resource, resourceIndex) => (
                           <a
@@ -185,15 +230,26 @@ const AIRecommendations = ({ results }) => {
               AI Recommendations Available
             </h4>
             <p className="text-gray-600 mb-4">
-              Get personalized insights and actionable recommendations powered by AI
+              Get personalized insights and actionable recommendations powered
+              by AI
             </p>
-            <button
-              onClick={loadAiRecommendations}
-              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center space-x-2 mx-auto"
-            >
-              <Brain className="w-5 h-5" />
-              <span>Generate AI Recommendations</span>
-            </button>
+            {user ? (
+              <button
+                onClick={loadAiRecommendations}
+                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center space-x-2 mx-auto"
+              >
+                <Brain className="w-5 h-5" />
+                <span>Generate AI Recommendations</span>
+              </button>
+            ) : (
+              <button
+                onClick={loadAiRecommendations}
+                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 flex items-center space-x-2 mx-auto"
+              >
+                <LogIn className="w-5 h-5" />
+                <span>Sign In to Generate AI Recommendations</span>
+              </button>
+            )}
           </div>
         )}
       </div>

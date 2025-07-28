@@ -6,7 +6,13 @@ import CategoryGrid from "./CategoryGrid";
 import SummaryStats from "./SummaryStats";
 import AIRecommendations from "./AIRecommendations";
 
-const AnalysisDashboard = ({ results, onBack, onNewAnalysis }) => {
+const AnalysisDashboard = ({
+  results,
+  onBack,
+  onNewAnalysis,
+  user,
+  onSignInRequired,
+}) => {
   return (
     <motion.section
       initial={{ opacity: 0, y: 50 }}
@@ -18,7 +24,13 @@ const AnalysisDashboard = ({ results, onBack, onNewAnalysis }) => {
         <ActionButtons results={results} onNewAnalysis={onNewAnalysis} />
         <CategoryGrid results={results} />
         <SummaryStats results={results} />
-        <AIRecommendations results={results} />
+        <div className="mt-8">
+          <AIRecommendations
+            results={results}
+            user={user}
+            onSignInRequired={onSignInRequired}
+          />
+        </div>
       </div>
     </motion.section>
   );

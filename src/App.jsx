@@ -317,6 +317,8 @@ function App() {
             results={analysisResults}
             onBack={handleBackToHome}
             onNewAnalysis={handleNewAnalysis}
+            user={user}
+            onSignInRequired={() => setIsAuthModalOpen(true)}
           />
         </div>
       )}
@@ -401,7 +403,7 @@ function App() {
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
             <div className="flex items-center justify-center space-x-4 flex-wrap">
-              <span>&copy; 2024 ChecKly. All rights reserved.</span>
+              <span>&copy; 2025 ChecKly. All rights reserved.</span>
               <span className="text-sm text-gray-500">Made by</span>
 
               {/* Debashis */}
