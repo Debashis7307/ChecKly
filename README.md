@@ -11,7 +11,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.0+-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Firebase](https://img.shields.io/badge/Firebase-9.0+-FFCA28?style=for-the-badge&logo=firebase)](https://firebase.google.com/)
 
-[Live Demo](https://checkly-go.vercel.app) • [Report Bug](https://github.com/your-username/checkly/issues) • [Request Feature](https://github.com/your-username/checkly/issues)
+[Live Demo](https://checkly-go.vercel.app) • [Report Bug](https://github.com/checkly-go/checkly/issues) • [Request Feature](https://github.com/your-username/checkly/issues)
 
 </div>
 
