@@ -16,6 +16,7 @@ import AuthModal from "./components/AuthModal";
 import UserProfileDropdown from "./components/UserProfileDropdown";
 import AnalysisLoading from "./components/AnalysisLoading";
 import AnalysisDashboard from "./components/AnalysisDashboard";
+import Leaderboard from "./components/Leaderboard";
 import websiteAnalysisService from "./services/websiteAnalysis";
 import logo from "./assets/logo.png";
 import boyImage from "./assets/boy.png";
@@ -25,6 +26,7 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState(null);
@@ -140,6 +142,12 @@ function App() {
               >
                 Features
               </a>
+              <button
+                onClick={() => setIsLeaderboardOpen(true)}
+                className="text-gray-700 hover:text-blue-600 transition-colors font-medium flex items-center gap-1"
+              >
+                🏆 Leaderboard
+              </button>
               <a
                 href="#about"
                 className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
@@ -185,6 +193,12 @@ function App() {
                 >
                   Features
                 </a>
+                <button
+                  onClick={() => setIsLeaderboardOpen(true)}
+                  className="text-gray-700 hover:text-blue-600 transition-colors flex items-center gap-1"
+                >
+                  🏆 Leaderboard
+                </button>
                 <a
                   href="#about"
                   className="text-gray-700 hover:text-blue-600 transition-colors"
@@ -463,6 +477,12 @@ function App() {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
+      />
+
+      {/* Leaderboard Modal */}
+      <Leaderboard
+        isOpen={isLeaderboardOpen}
+        onClose={() => setIsLeaderboardOpen(false)}
       />
     </div>
   );
