@@ -1,309 +1,249 @@
-import apiConfig from '../components/api.json';
+import axios from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 60000, // Increased timeout for analysis
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: false, // For CORS
+});
+
+api.interceptors.request.use(
+  (config) => {
+    console.log(`Making ${config.method?.toUpperCase()} request to ${config.baseURL}${config.url}`);
+    console.log('Request payload:', config.data);
+    return config;
+  },
+  (error) => {
+    console.error('Request error:', error);
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => {
+    console.log('API Response:', response.status, response.data);
+    return response;
+  },
+  (error) => {
+    console.error('API Error:', {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      message: error.message,
+      url: error.config?.url
+    });
+    
+    if (error.response?.status === 404) {
+      throw new Error('API endpoint not found. Please check if the server is running.');
+    } else if (error.response?.status === 500) {
+      throw new Error('Server error. Please try again later.');
+    } else if (error.code === 'ECONNABORTED') {
+      throw new Error('Request timeout. The analysis is taking longer than expected.');
+    } else if (!error.response) {
+      throw new Error('Network error. Please check if the backend server is running on port 8080.');
+    } else if (error.response?.status === 0) {
+      throw new Error('CORS error. Please check server configuration.');
+    }
+    
+    throw new Error(error.response?.data?.error || error.message || 'Unknown error occurred');
+  }
+);
 
 class WebsiteAnalysisService {
-  constructor() {
-    this.config = apiConfig;
+  async analyzeWebsite(url) {
+    try {
+      const normalizedUrl = this.normalizeUrl(url);
+      console.log('Analyzing website:', normalizedUrl);
+      
+      const response = await api.post('/check', {
+        url: normalizedUrl
+      });
+
+      const checkData = response.data;
+      console.log('Received check data:', checkData);
+      
+      if (!checkData) {
+        throw new Error('No data received from server');
+      }
+      
+      return this.formatAnalysisResults(checkData);
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      throw error; // Re-throw the error with original message
+    }
   }
 
-  async analyzeWebsite(url) {
+  async getCheckResult(checkId) {
+    try {
+      const response = await api.get(`/check/${checkId}`);
+      return this.formatAnalysisResults(response.data);
+    } catch (error) {
+      console.error('Failed to get check result:', error);
+      throw new Error(`Failed to retrieve check result: ${error.message}`);
+    }
+  }
+
+  async getRecommendations(checkId, focusAreas = []) {
+    try {
+      const response = await api.post('/recommend', {
+        check_id: checkId,
+        focus: focusAreas
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to get recommendations:', error);
+      throw new Error(`Failed to get recommendations: ${error.message}`);
+    }
+  }
+
+  formatAnalysisResults(checkData) {
+    console.log('Formatting analysis results:', checkData);
+    
+    if (!checkData) {
+      throw new Error('No check data provided');
+    }
+
+    // Handle case where analysis might still be in progress
+    if (checkData.status === 'pending' || checkData.status === 'running') {
+      throw new Error('Analysis is still in progress. Please try again in a moment.');
+    }
+
+    if (!checkData.report) {
+      throw new Error('No report data available. Analysis may have failed.');
+    }
+
+    const report = checkData.report;
     const results = {
-      url,
-      timestamp: new Date().toISOString(),
+      id: checkData.id,
+      url: checkData.url,
+      timestamp: checkData.created_at || report.timestamp,
+      status: checkData.status,
       categories: {},
-      overallScore: 0,
-      totalChecks: 0,
+      overallScore: report.overall_score || 0,
+      totalChecks: report.results?.length || 0,
       passedChecks: 0
     };
 
-    // Normalize URL
-    const normalizedUrl = this.normalizeUrl(url);
-    
-    try {
-      // Perform checks for each category
-      for (const [categoryName, category] of Object.entries(this.config.categories)) {
+    if (report.results && Array.isArray(report.results)) {
+      const categoryMap = {
+        'SEO': ['robots', 'sitemap', 'title', 'meta description', 'open graph', 'twitter', 'canonical'],
+        'PERFORMANCE': ['image', 'performance', 'speed', 'cache', 'compression'],
+        'SECURITY': ['hsts', 'csp', 'x-frame', 'x-content', 'referrer', 'xss', 'ssl', 'https', 'security']
+      };
+
+      // Initialize categories
+      Object.keys(categoryMap).forEach(categoryName => {
         results.categories[categoryName] = {
           checks: [],
           score: 0,
           totalWeight: 0
         };
+      });
 
-        for (const check of category.checks) {
-          const checkResult = await this.performCheck(normalizedUrl, check);
-          results.categories[categoryName].checks.push(checkResult);
-          
-          if (checkResult.status === 'pass') {
-            results.categories[categoryName].score += check.weight;
-            results.passedChecks++;
-          }
-          results.categories[categoryName].totalWeight += check.weight;
-          results.totalChecks++;
+      // Process each check result
+      report.results.forEach(result => {
+        if (result.status === 'pass') {
+          results.passedChecks++;
         }
 
-        // Calculate category score percentage
+        const category = this.getCategoryForCheck(result.name, categoryMap);
+        if (category && results.categories[category]) {
+          const weight = this.getWeightForCheck(result.name);
+          
+          results.categories[category].checks.push({
+            name: result.name,
+            description: result.details || result.message,
+            status: result.status,
+            message: result.message,
+            details: result.details,
+            timestamp: result.timestamp
+          });
+
+          if (result.status === 'pass') {
+            results.categories[category].score += weight;
+          }
+          results.categories[category].totalWeight += weight;
+        }
+      });
+
+      // Calculate category scores
+      Object.keys(results.categories).forEach(categoryName => {
         if (results.categories[categoryName].totalWeight > 0) {
           results.categories[categoryName].score = Math.round(
             (results.categories[categoryName].score / results.categories[categoryName].totalWeight) * 100
           );
         }
-      }
-
-      // Calculate overall score
-      const totalWeight = Object.values(results.categories).reduce(
-        (sum, category) => sum + category.totalWeight, 0
-      );
-      const totalScore = Object.values(results.categories).reduce(
-        (sum, category) => sum + (category.score * category.totalWeight / 100), 0
-      );
-      
-      results.overallScore = totalWeight > 0 ? Math.round((totalScore / totalWeight) * 100) : 0;
-
-      return results;
-    } catch (error) {
-      console.error('Analysis failed:', error);
-      throw new Error('Website analysis failed. Please try again.');
+      });
     }
+
+    console.log('Formatted results:', results);
+    return results;
+  }
+
+  getCategoryForCheck(checkName, categoryMap) {
+    const lowerCheckName = checkName.toLowerCase();
+    
+    for (const [category, keywords] of Object.entries(categoryMap)) {
+      if (keywords.some(keyword => lowerCheckName.includes(keyword.toLowerCase()))) {
+        return category;
+      }
+    }
+    
+    // Default to SEO if no match found
+    return 'SEO';
+  }
+
+  getWeightForCheck(checkName) {
+    const weights = {
+      'robots': 8,
+      'sitemap': 10,
+      'title': 12,
+      'meta description': 10,
+      'open graph': 7,
+      'twitter': 5,
+      'canonical': 6,
+      'hsts': 15,
+      'csp': 20,
+      'x-frame': 10,
+      'x-content': 8,
+      'referrer': 6,
+      'xss': 8,
+      'ssl': 25,
+      'https': 20,
+      'security': 15,
+      'performance': 15,
+      'image': 12
+    };
+
+    const lowerName = checkName.toLowerCase();
+    for (const [key, weight] of Object.entries(weights)) {
+      if (lowerName.includes(key.toLowerCase())) {
+        return weight;
+      }
+    }
+    return 5; // Default weight
   }
 
   normalizeUrl(url) {
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url;
+    if (!url || typeof url !== 'string') {
+      throw new Error('Invalid URL provided');
     }
-    return url;
-  }
-
-  async performCheck(url, check) {
-    const result = {
-      name: check.name,
-      description: check.description,
-      status: 'fail',
-      message: '',
-      details: '',
-      timestamp: new Date().toISOString()
-    };
-
+    
+    let normalizedUrl = url.trim();
+    if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+      normalizedUrl = 'https://' + normalizedUrl;
+    }
+    
     try {
-      switch (check.name) {
-        case 'Sitemap.xml':
-          result.status = await this.checkSitemap(url);
-          result.message = result.status === 'pass' ? 'Sitemap found and accessible' : 'No accessible sitemap found';
-          result.details = result.status === 'pass' ? 'Sitemap.xml is properly configured' : 'Create a sitemap.xml file and reference it in robots.txt';
-          break;
-
-        case 'Favicon':
-          result.status = await this.checkFavicon(url);
-          result.message = result.status === 'pass' ? 'Favicon found and loads successfully' : 'Favicon missing or not accessible';
-          result.details = result.status === 'pass' ? 'Favicon is properly configured' : 'Add a favicon.ico file to your root directory';
-          break;
-
-        case 'H1 Structure':
-          result.status = await this.checkH1Structure(url);
-          result.message = result.status === 'pass' ? 'H1 structure is properly configured' : 'H1 structure issues found';
-          result.details = result.status === 'pass' ? 'Heading tags follow logical order' : 'Ensure you have exactly one H1 tag and proper heading hierarchy';
-          break;
-
-        case 'LLMs.txt':
-          result.status = await this.checkLLMsTxt(url);
-          result.message = result.status === 'pass' ? 'LLMs.txt found' : 'LLMs.txt not found';
-          result.details = result.status === 'pass' ? 'AI training control file is present' : 'Consider adding llms.txt to control AI training on your content';
-          break;
-
-        case 'Open Graph Tags':
-          result.status = await this.checkOpenGraphTags(url);
-          result.message = result.status === 'pass' ? 'Open Graph tags properly configured' : 'Open Graph tags missing or incomplete';
-          result.details = result.status === 'pass' ? 'All essential OG tags present' : 'Add og:title, og:description, og:image, and og:url tags';
-          break;
-
-        case 'Robots.txt':
-          result.status = await this.checkRobotsTxt(url);
-          result.message = result.status === 'pass' ? 'Robots.txt found and accessible' : 'Robots.txt missing or not accessible';
-          result.details = result.status === 'pass' ? 'Robots.txt is properly configured' : 'Create a robots.txt file in your root directory';
-          break;
-
-        case 'SEO Metadata':
-          result.status = await this.checkSEOMetadata(url);
-          result.message = result.status === 'pass' ? 'SEO metadata properly configured' : 'SEO metadata issues found';
-          result.details = result.status === 'pass' ? 'Essential meta tags present' : 'Add title, description, and other important meta tags';
-          break;
-
-        case 'Image Optimization':
-          result.status = await this.checkImageOptimization(url);
-          result.message = result.status === 'pass' ? 'Images are optimized' : 'Image optimization issues found';
-          result.details = result.status === 'pass' ? 'Images have proper formats and alt text' : 'Optimize image sizes, add alt text, and use lazy loading';
-          break;
-
-        case 'WWW Redirect':
-          result.status = await this.checkWWWRedirect(url);
-          result.message = result.status === 'pass' ? 'WWW redirect properly configured' : 'WWW redirect issues found';
-          result.details = result.status === 'pass' ? 'Canonical URL redirects working' : 'Ensure www and non-www versions redirect to canonical URL';
-          break;
-
-        case 'HTTPS Redirect':
-          result.status = await this.checkHTTPSRedirect(url);
-          result.message = result.status === 'pass' ? 'HTTPS redirect properly configured' : 'HTTPS redirect not configured';
-          result.details = result.status === 'pass' ? 'HTTP traffic redirects to HTTPS' : 'Configure your server to redirect HTTP to HTTPS';
-          break;
-
-        case 'SSL Certificate':
-          result.status = await this.checkSSLCertificate(url);
-          result.message = result.status === 'pass' ? 'SSL certificate is valid' : 'SSL certificate issues found';
-          result.details = result.status === 'pass' ? 'HTTPS connection is secure' : 'Check your SSL certificate configuration';
-          break;
-
-        default:
-          result.status = 'fail';
-          result.message = 'Check not implemented';
-          result.details = 'This check is not yet implemented';
-      }
+      // Validate URL format
+      new URL(normalizedUrl);
+      return normalizedUrl;
     } catch (error) {
-      result.status = 'error';
-      result.message = 'Check failed';
-      result.details = error.message;
-    }
-
-    return result;
-  }
-
-  async checkSitemap(url) {
-    try {
-      const sitemapUrl = new URL('/sitemap.xml', url).href;
-      const response = await fetch(sitemapUrl, { method: 'HEAD' });
-      return response.ok ? 'pass' : 'fail';
-    } catch {
-      return 'fail';
-    }
-  }
-
-  async checkFavicon(url) {
-    try {
-      const faviconUrl = new URL('/favicon.ico', url).href;
-      const response = await fetch(faviconUrl, { method: 'HEAD' });
-      return response.ok ? 'pass' : 'fail';
-    } catch {
-      return 'fail';
-    }
-  }
-
-  async checkH1Structure(url) {
-    try {
-      const response = await fetch(url);
-      const html = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      
-      const h1Tags = doc.querySelectorAll('h1');
-      const h2Tags = doc.querySelectorAll('h2');
-      const h3Tags = doc.querySelectorAll('h3');
-      
-      // Check if there's exactly one H1 tag
-      if (h1Tags.length === 1) {
-        return 'pass';
-      }
-      return 'fail';
-    } catch {
-      return 'fail';
-    }
-  }
-
-  async checkLLMsTxt(url) {
-    try {
-      const llmsUrl = new URL('/llms.txt', url).href;
-      const response = await fetch(llmsUrl, { method: 'HEAD' });
-      return response.ok ? 'pass' : 'fail';
-    } catch {
-      return 'fail';
-    }
-  }
-
-  async checkOpenGraphTags(url) {
-    try {
-      const response = await fetch(url);
-      const html = await response.text();
-      
-      const ogTitle = html.includes('property="og:title"') || html.includes('property=\'og:title\'');
-      const ogDescription = html.includes('property="og:description"') || html.includes('property=\'og:description\'');
-      const ogImage = html.includes('property="og:image"') || html.includes('property=\'og:image\'');
-      const ogUrl = html.includes('property="og:url"') || html.includes('property=\'og:url\'');
-      
-      return (ogTitle && ogDescription && ogImage && ogUrl) ? 'pass' : 'fail';
-    } catch {
-      return 'fail';
-    }
-  }
-
-  async checkRobotsTxt(url) {
-    try {
-      const robotsUrl = new URL('/robots.txt', url).href;
-      const response = await fetch(robotsUrl, { method: 'HEAD' });
-      return response.ok ? 'pass' : 'fail';
-    } catch {
-      return 'fail';
-    }
-  }
-
-  async checkSEOMetadata(url) {
-    try {
-      const response = await fetch(url);
-      const html = await response.text();
-      
-      const hasTitle = html.includes('<title>') && html.includes('</title>');
-      const hasDescription = html.includes('name="description"') || html.includes('name=\'description\'');
-      const hasViewport = html.includes('name="viewport"') || html.includes('name=\'viewport\'');
-      
-      return (hasTitle && hasDescription && hasViewport) ? 'pass' : 'fail';
-    } catch {
-      return 'fail';
-    }
-  }
-
-  async checkImageOptimization(url) {
-    try {
-      const response = await fetch(url);
-      const html = await response.text();
-      
-      // Simple check for img tags with alt attributes
-      const imgTags = html.match(/<img[^>]*>/g) || [];
-      const imgTagsWithAlt = imgTags.filter(img => img.includes('alt='));
-      
-      return imgTags.length === 0 || imgTagsWithAlt.length === imgTags.length ? 'pass' : 'fail';
-    } catch {
-      return 'fail';
-    }
-  }
-
-  async checkWWWRedirect(url) {
-    try {
-      const urlObj = new URL(url);
-      const wwwUrl = urlObj.hostname.startsWith('www.') ? url : `https://www.${urlObj.hostname}`;
-      const nonWwwUrl = urlObj.hostname.startsWith('www.') ? `https://${urlObj.hostname.replace('www.', '')}` : url;
-      
-      // Check if both versions exist or redirect properly
-      const wwwResponse = await fetch(wwwUrl, { method: 'HEAD', redirect: 'follow' });
-      const nonWwwResponse = await fetch(nonWwwUrl, { method: 'HEAD', redirect: 'follow' });
-      
-      return (wwwResponse.ok || nonWwwResponse.ok) ? 'pass' : 'fail';
-    } catch {
-      return 'fail';
-    }
-  }
-
-  async checkHTTPSRedirect(url) {
-    try {
-      const httpUrl = url.replace('https://', 'http://');
-      const response = await fetch(httpUrl, { method: 'HEAD', redirect: 'follow' });
-      
-      // Check if HTTP redirects to HTTPS
-      return response.url.startsWith('https://') ? 'pass' : 'fail';
-    } catch {
-      return 'fail';
-    }
-  }
-
-  async checkSSLCertificate(url) {
-    try {
-      const response = await fetch(url);
-      return response.ok ? 'pass' : 'fail';
-    } catch {
-      return 'fail';
+      throw new Error('Invalid URL format');
     }
   }
 }
