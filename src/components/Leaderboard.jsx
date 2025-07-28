@@ -4,16 +4,16 @@ import { Trophy, Globe, X, Medal, TrendingUp } from "lucide-react";
 import websiteAnalysisService from "../services/websiteAnalysis";
 
 const rankColors = [
-  "bg-gradient-to-r from-yellow-400 to-yellow-200 text-yellow-900 border-yellow-300", // 1st
-  "bg-gradient-to-r from-gray-400 to-gray-200 text-gray-900 border-gray-300", // 2nd
-  "bg-gradient-to-r from-orange-400 to-orange-200 text-orange-900 border-orange-300", // 3rd
+  "bg-gradient-to-r from-yellow-400 to-yellow-300 text-yellow-900 border-yellow-400", // 1st
+  "bg-gradient-to-r from-purple-400 to-purple-300 text-purple-900 border-purple-400", // 2nd
+  "bg-gradient-to-r from-pink-400 to-pink-300 text-pink-900 border-pink-400", // 3rd
 ];
 
 const getRankIcon = (rank) => {
   if (rank === 0) return <Medal className="w-5 h-5 text-yellow-600" />;
-  if (rank === 1) return <Medal className="w-5 h-5 text-gray-600" />;
-  if (rank === 2) return <Medal className="w-5 h-5 text-orange-600" />;
-  return <TrendingUp className="w-5 h-5 text-blue-600" />;
+  if (rank === 1) return <Medal className="w-5 h-5 text-purple-600" />;
+  if (rank === 2) return <Medal className="w-5 h-5 text-pink-600" />;
+  return <TrendingUp className="w-5 h-5 text-purple-400" />;
 };
 
 const Leaderboard = ({ isOpen, onClose }) => {
@@ -55,11 +55,11 @@ const Leaderboard = ({ isOpen, onClose }) => {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-3xl shadow-2xl border border-gray-100 max-w-4xl w-full max-h-[90vh] overflow-hidden"
+        className="bg-gray-800 border border-gray-700 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Trophy className="w-8 h-8" />
@@ -72,7 +72,7 @@ const Leaderboard = ({ isOpen, onClose }) => {
               <X className="w-6 h-6" />
             </button>
           </div>
-          <p className="text-blue-100 mt-2">
+          <p className="text-purple-100 mt-2">
             Top 10 websites with the best analysis scores
           </p>
         </div>
@@ -82,27 +82,27 @@ const Leaderboard = ({ isOpen, onClose }) => {
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="flex flex-col items-center space-y-4">
-                <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-                <p className="text-gray-600">Loading leaderboard...</p>
+                <div className="w-12 h-12 border-4 border-purple-900/30 border-t-purple-400 rounded-full animate-spin"></div>
+                <p className="text-gray-300">Loading leaderboard...</p>
               </div>
             </div>
           ) : error ? (
             <div className="text-center py-12">
-              <div className="text-red-500 mb-4">
+              <div className="text-red-400 mb-4">
                 <Globe className="w-16 h-16 mx-auto" />
               </div>
-              <p className="text-gray-600">{error}</p>
+              <p className="text-gray-300">{error}</p>
               <button
                 onClick={fetchLeaderboard}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
               >
                 Try Again
               </button>
             </div>
           ) : leaderboard.length === 0 ? (
             <div className="text-center py-12">
-              <Trophy className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">
+              <Trophy className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+              <p className="text-gray-300">
                 No leaderboard data available yet.
               </p>
               <p className="text-gray-500 text-sm mt-2">
@@ -120,7 +120,7 @@ const Leaderboard = ({ isOpen, onClose }) => {
                   className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 hover:shadow-lg ${
                     idx < 3
                       ? rankColors[idx] + " shadow-lg transform hover:scale-105"
-                      : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+                      : "bg-gray-700/50 border-gray-600 hover:bg-gray-600/50"
                   }`}
                 >
                   <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -128,7 +128,7 @@ const Leaderboard = ({ isOpen, onClose }) => {
                       {getRankIcon(idx)}
                       <span
                         className={`text-xl font-bold ${
-                          idx < 3 ? "text-white" : "text-gray-700"
+                          idx < 3 ? "text-white" : "text-gray-300"
                         }`}
                       >
                         #{idx + 1}
@@ -150,7 +150,7 @@ const Leaderboard = ({ isOpen, onClose }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`font-medium hover:underline break-all flex-1 min-w-0 ${
-                        idx < 3 ? "text-white" : "text-gray-900"
+                        idx < 3 ? "text-white" : "text-gray-200"
                       }`}
                     >
                       {entry.domain}
@@ -161,14 +161,14 @@ const Leaderboard = ({ isOpen, onClose }) => {
                     <div className="text-right">
                       <div
                         className={`text-2xl font-bold ${
-                          idx < 3 ? "text-white" : "text-blue-600"
+                          idx < 3 ? "text-white" : "text-purple-400"
                         }`}
                       >
                         {entry.overallScore}
                       </div>
                       <div
                         className={`text-xs ${
-                          idx < 3 ? "text-white/80" : "text-gray-500"
+                          idx < 3 ? "text-white/80" : "text-gray-400"
                         }`}
                       >
                         Score
@@ -176,7 +176,7 @@ const Leaderboard = ({ isOpen, onClose }) => {
                     </div>
                     <div
                       className={`text-xs ${
-                        idx < 3 ? "text-white/80" : "text-gray-500"
+                        idx < 3 ? "text-white/80" : "text-gray-400"
                       }`}
                     >
                       {entry.formattedDate}
@@ -189,8 +189,8 @@ const Leaderboard = ({ isOpen, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
-          <div className="flex items-center justify-between text-sm text-gray-600">
+        <div className="bg-gray-900/50 px-6 py-4 border-t border-gray-700">
+          <div className="flex items-center justify-between text-sm text-gray-400">
             <span>Updated in real-time</span>
             <span>Total entries: {leaderboard.length}</span>
           </div>

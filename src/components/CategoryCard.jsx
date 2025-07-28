@@ -16,10 +16,10 @@ import {
 
 const CategoryCard = ({ categoryName, category, index }) => {
   const getScoreColor = (score) => {
-    if (score >= 90) return "text-emerald-600 bg-emerald-50 border-emerald-200";
-    if (score >= 75) return "text-blue-600 bg-blue-50 border-blue-200";
-    if (score >= 60) return "text-amber-600 bg-amber-50 border-amber-200";
-    return "text-red-600 bg-red-50 border-red-200";
+    if (score >= 90) return "text-emerald-400 bg-emerald-900/30 border-emerald-500/30";
+    if (score >= 75) return "text-purple-400 bg-purple-900/30 border-purple-500/30";
+    if (score >= 60) return "text-yellow-400 bg-yellow-900/30 border-yellow-500/30";
+    return "text-red-400 bg-red-900/30 border-red-500/30";
   };
 
   const getScoreIcon = (score) => {
@@ -32,26 +32,26 @@ const CategoryCard = ({ categoryName, category, index }) => {
   const getStatusIcon = (status) => {
     switch (status) {
       case "pass":
-        return <CheckCircle className="w-5 h-5 text-emerald-500" />;
+        return <CheckCircle className="w-5 h-5 text-emerald-400" />;
       case "fail":
-        return <XCircle className="w-5 h-5 text-red-500" />;
+        return <XCircle className="w-5 h-5 text-red-400" />;
       case "warning":
-        return <AlertCircle className="w-5 h-5 text-amber-500" />;
+        return <AlertCircle className="w-5 h-5 text-yellow-400" />;
       default:
-        return <Info className="w-5 h-5 text-gray-500" />;
+        return <Info className="w-5 h-5 text-gray-400" />;
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
       case "pass":
-        return "border-emerald-200 bg-emerald-50 hover:bg-emerald-100";
+        return "border-emerald-500/30 bg-emerald-900/20 hover:bg-emerald-900/30";
       case "fail":
-        return "border-red-200 bg-red-50 hover:bg-red-100";
+        return "border-red-500/30 bg-red-900/20 hover:bg-red-900/30";
       case "warning":
-        return "border-amber-200 bg-amber-50 hover:bg-amber-100";
+        return "border-yellow-500/30 bg-yellow-900/20 hover:bg-yellow-900/30";
       default:
-        return "border-gray-200 bg-gray-50 hover:bg-gray-100";
+        return "border-gray-600/30 bg-gray-800/20 hover:bg-gray-800/30";
     }
   };
 
@@ -73,10 +73,10 @@ const CategoryCard = ({ categoryName, category, index }) => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden h-[600px] flex flex-col"
+      className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-700 overflow-hidden h-[600px] flex flex-col"
     >
       {/* Category Header */}
-      <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+      <div className="p-6 border-b border-gray-700 bg-gradient-to-r from-gray-800/70 to-gray-900/70">
         <div className="flex items-center space-x-3 mb-3">
           <div
             className={`p-2 rounded-lg ${
@@ -86,10 +86,10 @@ const CategoryCard = ({ categoryName, category, index }) => {
             {getCategoryIcon(categoryName)}
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-xl font-bold text-white">
               {categoryName}
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-300">
               {
                 category.checks.filter(
                   (check) => check.status === "pass"
@@ -124,25 +124,25 @@ const CategoryCard = ({ categoryName, category, index }) => {
             <div className="flex items-start space-x-3">
               {getStatusIcon(check.status)}
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900 mb-1 text-sm">
+                <h3 className="font-semibold text-white mb-1 text-sm">
                   {check.name}
                 </h3>
-                <p className="text-xs text-gray-600 mb-2 leading-relaxed">
+                <p className="text-xs text-gray-300 mb-2 leading-relaxed">
                   {check.description}
                 </p>
                 <div className="space-y-1">
                   <p
                     className={`text-xs font-medium ${
                       check.status === "pass"
-                        ? "text-emerald-700"
-                        : "text-red-700"
+                        ? "text-emerald-300"
+                        : "text-red-300"
                     }`}
                   >
                     {check.message}
                   </p>
                   {check.status === "fail" && (
-                    <div className="bg-white/50 rounded-lg p-2 border border-gray-200">
-                      <p className="text-xs text-gray-700 leading-relaxed">
+                    <div className="bg-gray-800/50 rounded-lg p-2 border border-gray-600">
+                      <p className="text-xs text-gray-300 leading-relaxed">
                         {check.details}
                       </p>
                     </div>

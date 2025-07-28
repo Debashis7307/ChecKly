@@ -39,14 +39,14 @@ const SummaryStats = ({ results }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
-      className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden"
+      className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-700 overflow-hidden"
     >
-      <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-        <h3 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
-          <Clock className="w-6 h-6 text-blue-600" />
+      <div className="p-6 border-b border-gray-700 bg-gradient-to-r from-gray-800/70 to-gray-900/70">
+        <h3 className="text-2xl font-bold text-white flex items-center space-x-2">
+          <Clock className="w-6 h-6 text-purple-400" />
           <span>Analysis Summary</span>
         </h3>
-        <p className="text-gray-600 mt-1">
+        <p className="text-gray-300 mt-1">
           Detailed insights and recommendations for improving your website
         </p>
       </div>
@@ -55,18 +55,18 @@ const SummaryStats = ({ results }) => {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Recommendations */}
           <div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-              <Target className="w-5 h-5 text-emerald-600" />
+            <h4 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
+              <Target className="w-5 h-5 text-emerald-400" />
               <span>Key Recommendations</span>
             </h4>
             <div className="space-y-3">
               {getRecommendations().map((recommendation, index) => (
                 <div
                   key={index}
-                  className="flex items-start space-x-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200"
+                  className="flex items-start space-x-3 p-3 bg-emerald-900/20 rounded-lg border border-emerald-500/30"
                 >
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-gray-700 leading-relaxed">
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-sm text-gray-300 leading-relaxed">
                     {recommendation}
                   </p>
                 </div>
@@ -76,69 +76,69 @@ const SummaryStats = ({ results }) => {
 
           {/* Statistics */}
           <div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-              <BarChart3 className="w-5 h-5 text-blue-600" />
+            <h4 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
+              <BarChart3 className="w-5 h-5 text-purple-400" />
               <span>Performance Statistics</span>
             </h4>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                <div className="text-2xl font-bold text-blue-600">
+              <div className="bg-purple-900/30 rounded-lg p-4 border border-purple-500/30">
+                <div className="text-2xl font-bold text-purple-400">
                   {results.overallScore}%
                 </div>
-                <div className="text-sm text-blue-700">Overall Score</div>
+                <div className="text-sm text-purple-300">Overall Score</div>
               </div>
-              <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
-                <div className="text-2xl font-bold text-emerald-600">
+              <div className="bg-emerald-900/30 rounded-lg p-4 border border-emerald-500/30">
+                <div className="text-2xl font-bold text-emerald-400">
                   {results.passedChecks}
                 </div>
-                <div className="text-sm text-emerald-700">
+                <div className="text-sm text-emerald-300">
                   Passed Checks
                 </div>
               </div>
-              <div className="bg-red-50 rounded-lg p-4 border border-red-200">
-                <div className="text-2xl font-bold text-red-600">
+              <div className="bg-red-900/30 rounded-lg p-4 border border-red-500/30">
+                <div className="text-2xl font-bold text-red-400">
                   {results.totalChecks - results.passedChecks}
                 </div>
-                <div className="text-sm text-red-700">Failed Checks</div>
+                <div className="text-sm text-red-300">Failed Checks</div>
               </div>
-              <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
-                <div className="text-2xl font-bold text-amber-600">
+              <div className="bg-yellow-900/30 rounded-lg p-4 border border-yellow-500/30">
+                <div className="text-2xl font-bold text-yellow-400">
                   {results.totalChecks}
                 </div>
-                <div className="text-sm text-amber-700">Total Checks</div>
+                <div className="text-sm text-yellow-300">Total Checks</div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Next Steps */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-            <TrendingUp className="w-5 h-5 text-purple-600" />
+        <div className="mt-8 pt-6 border-t border-gray-700">
+          <h4 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
+            <TrendingUp className="w-5 h-5 text-pink-400" />
             <span>Next Steps</span>
           </h4>
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="text-sm text-gray-700">
+            <div className="flex items-center space-x-3 p-3 bg-pink-900/20 rounded-lg border border-pink-500/30">
+              <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+              <span className="text-sm text-gray-300">
                 Review and fix failed checks
               </span>
             </div>
-            <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="text-sm text-gray-700">
+            <div className="flex items-center space-x-3 p-3 bg-pink-900/20 rounded-lg border border-pink-500/30">
+              <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+              <span className="text-sm text-gray-300">
                 Implement suggested improvements
               </span>
             </div>
-            <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="text-sm text-gray-700">
+            <div className="flex items-center space-x-3 p-3 bg-pink-900/20 rounded-lg border border-pink-500/30">
+              <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+              <span className="text-sm text-gray-300">
                 Run another analysis after changes
               </span>
             </div>
-            <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="text-sm text-gray-700">
+            <div className="flex items-center space-x-3 p-3 bg-pink-900/20 rounded-lg border border-pink-500/30">
+              <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+              <span className="text-sm text-gray-300">
                 Monitor performance regularly
               </span>
             </div>

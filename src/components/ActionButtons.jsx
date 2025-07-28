@@ -40,14 +40,14 @@ const ActionButtons = ({ results, onNewAnalysis }) => {
     >
       <button
         onClick={downloadReport}
-        className="flex items-center space-x-2 px-6 py-3 bg-white text-blue-600 rounded-xl hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl"
+        className="flex items-center space-x-2 px-6 py-3 bg-gray-800/50 backdrop-blur-sm text-purple-400 rounded-xl hover:bg-gray-700/70 transition-all duration-300 shadow-lg hover:shadow-xl border border-gray-600"
       >
         <Download className="w-5 h-5" />
         <span>Download Report</span>
       </button>
       <button
         onClick={onNewAnalysis}
-        className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+        className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl"
       >
         <BarChart3 className="w-5 h-5" />
         <span>New Analysis</span>

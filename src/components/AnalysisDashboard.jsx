@@ -17,7 +17,7 @@ const AnalysisDashboard = ({
     <motion.section
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
-      className="py-16 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 border-t border-gray-200 border-b border-gray-200"
+      className="py-16 bg-gradient-to-br from-black via-gray-900 to-black border-t border-gray-800 border-b border-gray-800"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnalysisHeader results={results} onBack={onBack} />
