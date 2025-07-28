@@ -3,6 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import Header from "./components/Header";
 import HeroSection from "./components/HeroSection";
+import About from "./components/About";
 import FeaturesSection from "./components/FeaturesSection";
 import CTASection from "./components/CTASection";
 import Footer from "./components/Footer";
@@ -102,6 +103,8 @@ function App() {
         handleAnalyze={handleAnalyze}
         isAnalyzing={isAnalyzing}
       />
+
+      <About />
 
       {showDashboard && analysisResults && (
         <div id="analysis-dashboard">
