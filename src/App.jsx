@@ -51,12 +51,6 @@ function App() {
     e.preventDefault();
     if (!url.trim()) return;
 
-    // Check if user is signed in
-    if (!user) {
-      setIsAuthModalOpen(true);
-      return;
-    }
-
     setIsAnalyzing(true);
 
     try {
