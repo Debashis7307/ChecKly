@@ -73,6 +73,9 @@ class WebsiteAnalysisService {
       return this.formatAnalysisResults(checkData);
     } catch (error) {
       console.error('Analysis failed:', error);
+      if (error.message && error.message.includes('Buffer size mismatch')) {
+        throw new Error('Data transfer error occurred. Please try again.');
+      }
       throw error; // Re-throw the error with original message
     }
   }
@@ -117,13 +120,15 @@ class WebsiteAnalysisService {
     }
 
     const report = checkData.report;
+    
+    // Use the REAL overall score from the backend API
     const results = {
       id: checkData.id,
       url: checkData.url,
       timestamp: checkData.created_at || report.timestamp,
       status: checkData.status,
       categories: {},
-      overallScore: report.overall_score || 0,
+      overallScore: report.overall_score || 0, // This is the REAL score from backend
       totalChecks: report.results?.length || 0,
       passedChecks: 0
     };
@@ -140,11 +145,12 @@ class WebsiteAnalysisService {
         results.categories[categoryName] = {
           checks: [],
           score: 0,
-          totalWeight: 0
+          totalChecks: 0,
+          passedChecks: 0
         };
       });
 
-      // Process each check result
+      // Process each check result and count passes/fails per category
       report.results.forEach(result => {
         if (result.status === 'pass') {
           results.passedChecks++;
@@ -152,8 +158,6 @@ class WebsiteAnalysisService {
 
         const category = this.getCategoryForCheck(result.name, categoryMap);
         if (category && results.categories[category]) {
-          const weight = this.getWeightForCheck(result.name);
-          
           results.categories[category].checks.push({
             name: result.name,
             description: result.details || result.message,
@@ -163,24 +167,27 @@ class WebsiteAnalysisService {
             timestamp: result.timestamp
           });
 
+          results.categories[category].totalChecks++;
           if (result.status === 'pass') {
-            results.categories[category].score += weight;
+            results.categories[category].passedChecks++;
           }
-          results.categories[category].totalWeight += weight;
         }
       });
 
-      // Calculate category scores
+      // Calculate category scores based on actual pass/fail ratio (0-100%)
       Object.keys(results.categories).forEach(categoryName => {
-        if (results.categories[categoryName].totalWeight > 0) {
-          results.categories[categoryName].score = Math.round(
-            (results.categories[categoryName].score / results.categories[categoryName].totalWeight) * 100
-          );
+        const category = results.categories[categoryName];
+        if (category.totalChecks > 0) {
+          // Real category score based on percentage of passed checks
+          category.score = Math.round((category.passedChecks / category.totalChecks) * 100);
+        } else {
+          category.score = 0;
         }
       });
     }
 
-    console.log('Formatted results:', results);
+    console.log('Formatted results with REAL scores:', results);
+    console.log('Overall score from backend:', report.overall_score);
     return results;
   }
 
@@ -195,37 +202,6 @@ class WebsiteAnalysisService {
     
     // Default to SEO if no match found
     return 'SEO';
-  }
-
-  getWeightForCheck(checkName) {
-    const weights = {
-      'robots': 8,
-      'sitemap': 10,
-      'title': 12,
-      'meta description': 10,
-      'open graph': 7,
-      'twitter': 5,
-      'canonical': 6,
-      'hsts': 15,
-      'csp': 20,
-      'x-frame': 10,
-      'x-content': 8,
-      'referrer': 6,
-      'xss': 8,
-      'ssl': 25,
-      'https': 20,
-      'security': 15,
-      'performance': 15,
-      'image': 12
-    };
-
-    const lowerName = checkName.toLowerCase();
-    for (const [key, weight] of Object.entries(weights)) {
-      if (lowerName.includes(key.toLowerCase())) {
-        return weight;
-      }
-    }
-    return 5; // Default weight
   }
 
   normalizeUrl(url) {
