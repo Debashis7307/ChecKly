@@ -17,6 +17,18 @@
 
 ---
 
+## 👀 Have a Look
+
+<div align="center">
+
+![ChecKly Screenshot](src/assets/Screenshot.png)
+
+_ChecKly Dashboard - Comprehensive Website Analysis Interface_
+
+</div>
+
+---
+
 ## 📋 Table of Contents
 
 - [✨ Features](#-features)
