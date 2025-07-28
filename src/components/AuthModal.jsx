@@ -181,14 +181,14 @@ const AuthModal = ({ isOpen, onClose }) => {
 
           {/* Modal */}
           <motion.div
-            className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-md bg-gray-800 border border-gray-700 rounded-3xl shadow-2xl overflow-hidden"
             variants={modalVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
           >
             {/* Header */}
-            <div className="relative p-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <div className="relative p-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors"
@@ -204,7 +204,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                 <h2 className="text-2xl font-bold text-center">
                   {isSignUp ? "Create Account" : "Welcome Back"}
                 </h2>
-                <p className="text-blue-100 text-center mt-2">
+                <p className="text-purple-100 text-center mt-2">
                   {isSignUp ? "Join ChecKly today" : "Sign in to your account"}
                 </p>
               </motion.div>
@@ -225,14 +225,14 @@ const AuthModal = ({ isOpen, onClose }) => {
                       <input
                         type="text"
                         placeholder="Full Name"
-                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors"
+                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:border-purple-500 focus:outline-none transition-colors placeholder-gray-400"
                         {...register("name", {
                           required: isSignUp && "Name is required",
                         })}
                       />
                     </div>
                     {errors.name && (
-                      <p className="text-red-500 text-sm mt-1 flex items-center">
+                      <p className="text-red-400 text-sm mt-1 flex items-center">
                         <AlertCircle className="w-4 h-4 mr-1" />
                         {errors.name.message}
                       </p>
@@ -251,7 +251,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     <input
                       type="email"
                       placeholder="Email Address"
-                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors"
+                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:border-purple-500 focus:outline-none transition-colors placeholder-gray-400"
                       {...register("email", {
                         required: "Email is required",
                         pattern: {
@@ -262,7 +262,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-red-500 text-sm mt-1 flex items-center">
+                    <p className="text-red-400 text-sm mt-1 flex items-center">
                       <AlertCircle className="w-4 h-4 mr-1" />
                       {errors.email.message}
                     </p>
@@ -280,7 +280,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     <input
                       type={showPassword ? "text" : "password"}
                       placeholder="Password"
-                      className="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors"
+                      className="w-full pl-10 pr-12 py-3 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:border-purple-500 focus:outline-none transition-colors placeholder-gray-400"
                       {...register("password", {
                         required: "Password is required",
                         minLength: {
@@ -292,7 +292,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
                     >
                       {showPassword ? (
                         <EyeOff className="w-5 h-5" />
@@ -302,7 +302,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     </button>
                   </div>
                   {errors.password && (
-                    <p className="text-red-500 text-sm mt-1 flex items-center">
+                    <p className="text-red-400 text-sm mt-1 flex items-center">
                       <AlertCircle className="w-4 h-4 mr-1" />
                       {errors.password.message}
                     </p>
@@ -321,7 +321,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Confirm Password"
-                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors"
+                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:border-purple-500 focus:outline-none transition-colors placeholder-gray-400"
                         {...register("confirmPassword", {
                           required: "Please confirm your password",
                           validate: (value) =>
@@ -330,7 +330,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                       />
                     </div>
                     {errors.confirmPassword && (
-                      <p className="text-red-500 text-sm mt-1 flex items-center">
+                      <p className="text-red-400 text-sm mt-1 flex items-center">
                         <AlertCircle className="w-4 h-4 mr-1" />
                         {errors.confirmPassword.message}
                       </p>
@@ -343,10 +343,10 @@ const AuthModal = ({ isOpen, onClose }) => {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-center"
+                    className="p-3 bg-red-900/30 border border-red-500/30 rounded-xl flex items-center"
                   >
-                    <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
-                    <span className="text-red-700 text-sm">{error}</span>
+                    <AlertCircle className="w-5 h-5 text-red-400 mr-2" />
+                    <span className="text-red-300 text-sm">{error}</span>
                   </motion.div>
                 )}
 
@@ -354,10 +354,10 @@ const AuthModal = ({ isOpen, onClose }) => {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-3 bg-green-50 border border-green-200 rounded-xl flex items-center"
+                    className="p-3 bg-green-900/30 border border-green-500/30 rounded-xl flex items-center"
                   >
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
-                    <span className="text-green-700 text-sm">{success}</span>
+                    <CheckCircle className="w-5 h-5 text-green-400 mr-2" />
+                    <span className="text-green-300 text-sm">{success}</span>
                   </motion.div>
                 )}
 
@@ -365,7 +365,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                 <motion.button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
+                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: isSignUp ? 0.6 : 0.4 }}
@@ -390,10 +390,10 @@ const AuthModal = ({ isOpen, onClose }) => {
               >
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300" />
+                    <div className="w-full border-t border-gray-600" />
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">
+                    <span className="px-2 bg-gray-800 text-gray-400">
                       Or continue with
                     </span>
                   </div>
@@ -403,7 +403,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                   <button
                     onClick={handleGoogleSignIn}
                     disabled={loading}
-                    className="w-full py-3 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
+                    className="w-full py-3 border-2 border-gray-600 bg-gray-700 text-gray-300 font-semibold rounded-xl hover:bg-gray-600 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
                   >
                     <Chrome className="w-5 h-5 mr-2" />
                     Google
@@ -412,7 +412,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                   <button
                     onClick={handleGitHubSignIn}
                     disabled={loading}
-                    className="w-full py-3 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
+                    className="w-full py-3 border-2 border-gray-600 bg-gray-700 text-gray-300 font-semibold rounded-xl hover:bg-gray-600 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
                   >
                     <Github className="w-5 h-5 mr-2" />
                     GitHub
@@ -431,7 +431,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                   <button
                     onClick={handleForgotPassword}
                     disabled={loading}
-                    className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+                    className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors"
                   >
                     Forgot your password?
                   </button>
@@ -445,13 +445,13 @@ const AuthModal = ({ isOpen, onClose }) => {
                 transition={{ delay: isSignUp ? 0.8 : 0.7 }}
                 className="text-center mt-6"
               >
-                <p className="text-gray-600">
+                <p className="text-gray-300">
                   {isSignUp
                     ? "Already have an account?"
                     : "Don't have an account?"}
                   <button
                     onClick={toggleMode}
-                    className="text-blue-600 hover:text-blue-700 font-semibold ml-1 transition-colors"
+                    className="text-purple-400 hover:text-purple-300 font-semibold ml-1 transition-colors"
                   >
                     {isSignUp ? "Sign In" : "Sign Up"}
                   </button>

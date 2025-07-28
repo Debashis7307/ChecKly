@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogOut, User } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import boyAvatar from "../assets/boy.png";
@@ -48,7 +48,7 @@ const UserProfileDropdown = ({ user, onSignOut }) => {
       {/* Avatar Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition-all duration-300 transform hover:scale-105"
+        className="flex items-center justify-center w-10 h-10 rounded-full overflow-hidden border-2 border-gray-600 hover:border-purple-400 transition-all duration-300 transform hover:scale-105"
       >
         <img
           src={getUserAvatar()}
@@ -65,12 +65,12 @@ const UserProfileDropdown = ({ user, onSignOut }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-50"
+            className="absolute right-0 mt-2 w-64 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl overflow-hidden z-50"
           >
             {/* Header */}
-            <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-100">
+            <div className="p-4 bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-b border-gray-700">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md">
+                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-400 shadow-md">
                   <img
                     src={getUserAvatar()}
                     alt="User Avatar"
@@ -78,8 +78,8 @@ const UserProfileDropdown = ({ user, onSignOut }) => {
                   />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Welcome</h3>
-                  <p className="text-sm text-gray-600">{getUserName()}</p>
+                  <h3 className="font-semibold text-white">Welcome</h3>
+                  <p className="text-sm text-gray-300">{getUserName()}</p>
                 </div>
               </div>
             </div>
@@ -88,7 +88,7 @@ const UserProfileDropdown = ({ user, onSignOut }) => {
             <div className="p-2">
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 group"
+                className="w-full flex items-center space-x-3 px-4 py-3 text-red-400 hover:bg-red-900/30 rounded-lg transition-all duration-200 group"
               >
                 <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
                 <span className="font-medium">Log Out</span>

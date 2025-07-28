@@ -4,10 +4,10 @@ import { ArrowLeft, Award, TrendingUp, Target, AlertCircle } from "lucide-react"
 
 const AnalysisHeader = ({ results, onBack }) => {
   const getScoreColor = (score) => {
-    if (score >= 90) return "text-emerald-600 bg-emerald-50 border-emerald-200";
-    if (score >= 75) return "text-blue-600 bg-blue-50 border-blue-200";
-    if (score >= 60) return "text-amber-600 bg-amber-50 border-amber-200";
-    return "text-red-600 bg-red-50 border-red-200";
+    if (score >= 90) return "text-emerald-400 bg-emerald-900/30 border-emerald-500/30";
+    if (score >= 75) return "text-purple-400 bg-purple-900/30 border-purple-500/30";
+    if (score >= 60) return "text-yellow-400 bg-yellow-900/30 border-yellow-500/30";
+    return "text-red-400 bg-red-900/30 border-red-500/30";
   };
 
   const getScoreLabel = (score) => {
@@ -33,21 +33,21 @@ const AnalysisHeader = ({ results, onBack }) => {
       <div className="flex items-center justify-center space-x-3 mb-4">
         <button
           onClick={onBack}
-          className="p-2 hover:bg-white/80 rounded-full transition-all duration-300 shadow-lg"
+          className="p-2 hover:bg-gray-800/80 rounded-full transition-all duration-300 shadow-lg border border-gray-700"
         >
-          <ArrowLeft className="w-5 h-5 text-gray-600" />
+          <ArrowLeft className="w-5 h-5 text-gray-300" />
         </button>
-        <h1 className="text-4xl md:text-5xl font-bold gradient-text">
+        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">
           Analysis Report
         </h1>
       </div>
-      <p className="text-xl text-gray-600 mb-6">
+      <p className="text-xl text-gray-300 mb-6">
         Comprehensive analysis of{" "}
-        <span className="font-semibold text-blue-600">{results.url}</span>
+        <span className="font-semibold text-purple-400">{results.url}</span>
       </p>
 
       {/* Overall Score Card */}
-      <div className="inline-flex items-center space-x-4 px-8 py-4 bg-white rounded-2xl shadow-xl border-2 border-gray-100">
+      <div className="inline-flex items-center space-x-4 px-8 py-4 bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl border-2 border-gray-700">
         <div
           className={`p-3 rounded-full ${
             getScoreColor(results.overallScore).split(" ")[0]
@@ -63,7 +63,7 @@ const AnalysisHeader = ({ results, onBack }) => {
           >
             {results.overallScore}%
           </div>
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-400">
             {getScoreLabel(results.overallScore)} • {results.passedChecks}/
             {results.totalChecks} checks passed
           </div>
