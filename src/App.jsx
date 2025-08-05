@@ -15,15 +15,23 @@ import Leaderboard from "./components/Leaderboard";
 import websiteAnalysisService from "./services/websiteAnalysis";
 
 function App() {
+  // Wake up backend on initial load
+  useEffect(() => {
+    fetch(
+      import.meta.env.VITE_API_BASE_URL
+        ? `${import.meta.env.VITE_API_BASE_URL}/health`
+        : "https://localhost:8080/api/v1/health",
+    ).catch(() => {});
+  }, []);
   const [showWarning, setShowWarning] = useState(false);
 
   // Show warning banner for 3 seconds on first visit in session
   useEffect(() => {
-    if (!sessionStorage.getItem('warningShown')) {
+    if (!sessionStorage.getItem("warningShown")) {
       setShowWarning(true);
       setTimeout(() => {
         setShowWarning(false);
-        sessionStorage.setItem('warningShown', 'true');
+        sessionStorage.setItem("warningShown", "true");
       }, 10000);
     }
   }, []);
@@ -103,52 +111,52 @@ function App() {
     <>
       <WarningBanner visible={showWarning} />
       <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
-      <Header
-        isScrolled={isScrolled}
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-        user={user}
-        setIsAuthModalOpen={setIsAuthModalOpen}
-        setIsLeaderboardOpen={setIsLeaderboardOpen}
-        handleSignOut={handleSignOut}
-      />
+        <Header
+          isScrolled={isScrolled}
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          user={user}
+          setIsAuthModalOpen={setIsAuthModalOpen}
+          setIsLeaderboardOpen={setIsLeaderboardOpen}
+          handleSignOut={handleSignOut}
+        />
 
-      <HeroSection
-        url={url}
-        setUrl={setUrl}
-        handleAnalyze={handleAnalyze}
-        isAnalyzing={isAnalyzing}
-      />
+        <HeroSection
+          url={url}
+          setUrl={setUrl}
+          handleAnalyze={handleAnalyze}
+          isAnalyzing={isAnalyzing}
+        />
 
-      <About />
+        <About />
 
-      {showDashboard && analysisResults && (
-        <div id="analysis-dashboard">
-          <AnalysisDashboard
-            results={analysisResults}
-            onBack={handleBackToHome}
-            onNewAnalysis={handleNewAnalysis}
-            user={user}
-            onSignInRequired={() => setIsAuthModalOpen(true)}
-          />
-        </div>
-      )}
+        {showDashboard && analysisResults && (
+          <div id="analysis-dashboard">
+            <AnalysisDashboard
+              results={analysisResults}
+              onBack={handleBackToHome}
+              onNewAnalysis={handleNewAnalysis}
+              user={user}
+              onSignInRequired={() => setIsAuthModalOpen(true)}
+            />
+          </div>
+        )}
 
-      <FeaturesSection />
-      <CTASection setIsAuthModalOpen={setIsAuthModalOpen} />
-      <Footer />
+        <FeaturesSection />
+        <CTASection setIsAuthModalOpen={setIsAuthModalOpen} />
+        <Footer />
 
-      {isAnalyzing && <AnalysisLoading url={url} />}
+        {isAnalyzing && <AnalysisLoading url={url} />}
 
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-      />
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+        />
 
-      <Leaderboard
-        isOpen={isLeaderboardOpen}
-        onClose={() => setIsLeaderboardOpen(false)}
-      />
+        <Leaderboard
+          isOpen={isLeaderboardOpen}
+          onClose={() => setIsLeaderboardOpen(false)}
+        />
       </div>
     </>
   );
