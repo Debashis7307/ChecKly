@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import Header from "./components/Header";
+import WarningBanner from "./components/WarningBanner";
 import HeroSection from "./components/HeroSection";
 import About from "./components/About";
 import FeaturesSection from "./components/FeaturesSection";
@@ -14,6 +15,19 @@ import Leaderboard from "./components/Leaderboard";
 import websiteAnalysisService from "./services/websiteAnalysis";
 
 function App() {
+  const [showWarning, setShowWarning] = useState(false);
+
+  // Show warning banner for 3 seconds on first visit in session
+  useEffect(() => {
+    if (!sessionStorage.getItem('warningShown')) {
+      setShowWarning(true);
+      setTimeout(() => {
+        setShowWarning(false);
+        sessionStorage.setItem('warningShown', 'true');
+      }, 10000);
+    }
+  }, []);
+
   const [url, setUrl] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -86,7 +100,9 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
+    <>
+      <WarningBanner visible={showWarning} />
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
       <Header
         isScrolled={isScrolled}
         isMobileMenuOpen={isMobileMenuOpen}
@@ -133,7 +149,8 @@ function App() {
         isOpen={isLeaderboardOpen}
         onClose={() => setIsLeaderboardOpen(false)}
       />
-    </div>
+      </div>
+    </>
   );
 }
 
